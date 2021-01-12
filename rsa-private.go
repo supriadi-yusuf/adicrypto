@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
+	"errors"
 	"io/ioutil"
 	"os"
 )
@@ -52,7 +53,13 @@ func BytesToPrivateKey(keyBytes []byte) (privateKey *rsa.PrivateKey, err error) 
 
 // PEMBytesToKeyBytes is function converting pem bytes into key bytes
 func PEMBytesToKeyBytes(pemBytes []byte) (keyBytes []byte, err error) {
+
 	block, _ := pem.Decode(pemBytes)
+	if block == nil {
+		err = errors.New("decode byte to PEM block is fail")
+		return
+	}
+
 	if x509.IsEncryptedPEMBlock(block) {
 
 		keyBytes, err = x509.DecryptPEMBlock(block, nil)
