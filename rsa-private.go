@@ -1,6 +1,7 @@
 package adicrypto
 
 import (
+	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
@@ -100,4 +101,13 @@ func CreatePrivateKeyFromFile(fileName string) (privateKey *rsa.PrivateKey, err 
 	return
 }
 
-// func DecryptPKCS1v15(rand io.Reader, priv *PrivateKey, ciphertext []byte) ([]byte, error)
+// GenerateKeyPair is function to generate private key and public key
+func GenerateKeyPair(sizeInBits int) (*rsa.PrivateKey, *rsa.PublicKey, error) {
+
+	privateKey, err := rsa.GenerateKey(rand.Reader, sizeInBits)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return privateKey, &privateKey.PublicKey, nil
+}
